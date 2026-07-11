@@ -199,4 +199,4 @@ import pickle
 pickle.dump(tfidf, open("vectorizer.pkl", "wb"))
 pickle.dump(mnb, open("spam_model.pkl", "wb"))  # save bnb as it has good accuracy and precision 
 
-print("Model Saved Successfully")
+# print("Model Saved Successfully")
