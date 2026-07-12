@@ -1,69 +1,69 @@
+import streamlit as st
 import pickle
 import string
 import nltk
-from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel
 from nltk.corpus import stopwords
 from nltk.stem.porter import PorterStemmer
 
-nltk.download('punkt', quiet=True)
-nltk.download('stopwords', quiet=True)
+# Download NLTK data required for tokenization and stopwords
+nltk.download("punkt", quiet=True)
+nltk.download("stopwords", quiet=True)
 
+# Initialize stemmer
 ps = PorterStemmer()
+
+# Load model and vectorizer 
 tfidf = pickle.load(open("vectorizer.pkl", "rb"))
 model = pickle.load(open("spam_model.pkl", "rb"))
-app = FastAPI(title="Spam Classifier API")
-class MessageInput(BaseModel):
-    text: str
-def text_transformation(text: str) -> str:
+
+def text_transformation(text):
     text = text.lower()
     text = nltk.word_tokenize(text)
 
     y = []
-    for i in text:
-        if i.isalnum():
-            y.append(i)
+    for word in text:
+        if word.isalnum():
+            y.append(word)
 
     text = y[:]
     y.clear()
 
-    for i in text:
-        if i not in stopwords.words("english") and i not in string.punctuation:
-            y.append(i)
+    for word in text:
+        if word not in stopwords.words("english") and word not in string.punctuation:
+            y.append(word)
 
     text = y[:]
     y.clear()
 
-    for i in text:
-        y.append(ps.stem(i))
+    for word in text:
+        y.append(ps.stem(word))
 
     return " ".join(y)
 
-@app.get("/")
-def read_root():
-    return {"message": "Spam Classifier API is running. Go to /docs to test it."}
 
-@app.post("/predict")
-def predict_spam(input_data: MessageInput):
-    try:
-        transformed = text_transformation(input_data.text)
-        vector = tfidf.transform([transformed])
-        prediction = model.predict(vector)[0]
+# --- Streamlit UI ---
+st.title("Spam Classifier")
+st.write("Detect whether a message is Spam or Not Spam.")
 
-        if prediction == 1:
-            return {
-                "input_text": input_data.text,
-                "prediction": "Spam Message",
-                "is_spam": True
-            }
+# Text area for user input
+input_text = st.text_area("Enter your message here...", height=150)
+
+# Predict button
+if st.button("Predict"):
+    if input_text.strip() == "":
+        st.warning("Please enter some text to classify.")
+    else:
+        # 1. Preprocess
+        transformed_text = text_transformation(input_text)
+        
+        # 2. Vectorize
+        vector_input = tfidf.transform([transformed_text])
+        
+        # 3. Predict
+        result = model.predict(vector_input)[0]
+        
+        # 4. Display result
+        if result == 1:
+            st.error("🚨 Spam Message")
         else:
-            return {
-                "input_text": input_data.text,
-                "prediction": "Not Spam",
-                "is_spam": False
-            }
-            
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error during prediction: {str(e)}")
-
-
+            st.success("✅ Not Spam")

@@ -1,6 +1,5 @@
-fastapi
-uvicorn[standard]
-pydantic
+streamlit
 scikit-learn
-nltk
+pandas
 numpy
+nltk
