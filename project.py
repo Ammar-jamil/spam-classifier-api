@@ -176,27 +176,27 @@ X_train,X_test,y_train,y_test=train_test_split(X,y,test_size=0.2,random_state=2)
 gnb.fit(X_train,y_train)
 ypred=gnb.predict(X_test)
 
-# print(accuracy_score(y_test,ypred))
-# print(confusion_matrix(y_test,ypred))
-# print(precision_score(y_test,ypred))
+print(accuracy_score(y_test,ypred))
+print(confusion_matrix(y_test,ypred))
+print(precision_score(y_test,ypred))
 
 mnb.fit(X_train,y_train)
 ypred1 = mnb.predict(X_test)
 
-# print(accuracy_score(y_test,ypred1))
-# print(confusion_matrix(y_test,ypred1))
-# print(precision_score(y_test,ypred1))
+print(accuracy_score(y_test,ypred1))
+print(confusion_matrix(y_test,ypred1))
+print(precision_score(y_test,ypred1))
 
 bnb.fit(X_train,y_train)
 ypred2 = bnb.predict(X_test)
 
-# print(accuracy_score(y_test,ypred2))
-# print(confusion_matrix(y_test,ypred2))
-# print(precision_score(y_test,ypred2))
+print(accuracy_score(y_test,ypred2))
+print(confusion_matrix(y_test,ypred2))
+print(precision_score(y_test,ypred2))
 
 import pickle
 
-pickle.dump(tfidf, open("vectorizer.pkl", "wb"))
-pickle.dump(mnb, open("spam_model.pkl", "wb"))  # save bnb as it has good accuracy and precision 
+# pickle.dump(tfidf, open("vectorizer.pkl", "wb"))
+# pickle.dump(mnb, open("spam_model.pkl", "wb"))  # save bnb as it has good accuracy and precision 
 
 # print("Model Saved Successfully")
