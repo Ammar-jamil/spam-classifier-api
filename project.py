@@ -48,47 +48,8 @@ df["num_sentences"]=df["message"].apply(lambda y:len(nltk.sent_tokenize(y)))
 # summary statics of all messages
 print(df[["num_characters","num_words","num_sentences"]].describe())
 
-# summary statics of both ham ans spam messages of both
-# print("Ham messsages") 
-# print(df[df["label"]==0][["num_characters","num_words","num_sentences"]].describe())
-# print("spam messges")
-# spam messages summary statics
-# print(df[df["label"]==1][["num_characters","num_words","num_sentences"]].describe())
 
 
-import seaborn as sb
-import matplotlib.pyplot as plt 
-
-# plt.figure(figsize=(10,8))
-# sb.histplot(df[df["label"]==0]["num_characters"],bins=50)
-# plt.show()
-
-# plt.figure(figsize=(10,8))
-# sb.histplot(df[df["label"]==1]["num_characters"],bins=50)
-# plt.show()
-
-# plt.figure(figsize=(10,8))
-# sb.histplot(df[df["label"]==0]["num_words"],bins=50)
-# plt.show()
-
-# plt.figure(figsize=(10,8))
-# sb.histplot(df[df["label"]==1]["num_words"],bins=50)
-# plt.show()
-# plt.figure(figsize=(10,8))
-# sb.histplot(df[df["label"]==0]["num_sentences"],bins=20)
-# plt.show()
-
-# plt.figure(figsize=(10,8))
-# sb.histplot(df[df["label"]==1]["num_sentences"],bins=30)
-# plt.show()
-corr_matrix=df.select_dtypes(include="number").corr()
-
-corr_matrix=df[["num_characters","num_words","num_sentences","label"]].corr()
-
-# print(corr_matrix)
-
-# sb.heatmap(corr_matrix,annot=True)
-# plt.show()
 import string 
 import nltk
 from nltk.corpus import stopwords
@@ -153,19 +114,17 @@ common_45_words=Counter(ham_corpus).most_common(40)
 f1data=pd.DataFrame(common_45_words)
 # print(fdata)
 
-from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
+from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.naive_bayes import GaussianNB,MultinomialNB,BernoulliNB
 from sklearn.metrics import accuracy_score,confusion_matrix,precision_score
 from sklearn.model_selection import train_test_split
 
-# cv=CountVectorizer()
 gnb=GaussianNB()
 mnb=MultinomialNB()
 bnb=BernoulliNB()
 tfidf=TfidfVectorizer()
 
-# X=cv.fit_transform(df["transformed_text"]).toarray()  # this is done using counvectrizer 
-X=tfidf.fit_transform(df["transformed_text"]).toarray()
+X=tfidf.fit_transform(df["transformed_text"])
 
 y=df["label"].values
 # print(X)
@@ -200,3 +159,5 @@ import pickle
 # pickle.dump(mnb, open("spam_model.pkl", "wb"))  # save bnb as it has good accuracy and precision 
 
 # print("Model Saved Successfully")
+
+
